@@ -24,7 +24,18 @@ const resolvers = {
                 await connection.save(tokens);
             }
 
+            console.log("at: ", data.access_token, "rt: ", data.refresh_token);
+
             return "Connection Refreshed";
+        },
+        getCurrencyConversion: async (
+            parent: any,
+            args: any,
+            { dataSources: { mercadoLivreApi } }: Context
+        ) => {
+            const data = await mercadoLivreApi.getCurrencyConversion();
+
+            return data;
         },
     },
 };
