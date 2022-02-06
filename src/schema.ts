@@ -11,10 +11,25 @@ const typeDefs = gql`
         valid_until: String
     }
 
+    type Category {
+        id: String
+        name: String
+    }
+
+    type JoinedCategoryData {
+        mainCategory: Category
+        childrenCategories: [Category]
+    }
+
+    type InitialData {
+        currencieData: CurrencieConversion
+        joinedCategoryData: [JoinedCategoryData]
+    }
+
     type Query {
         checkHealth: String
         refreshApiConnection: String
-        getCurrencyConversion: CurrencieConversion
+        getInitialData: InitialData
     }
 `;
 

@@ -1,4 +1,16 @@
 import type { Context } from "./resolverTypes";
-import type { IGetCurrencieConversion } from "./dataSourceTypes";
+import type {
+    IGetCurrencieConversion,
+    ICategory,
+    ICategoriesDetails,
+} from "./dataSourceTypes";
+import { Category, IJoinedCategoryData } from "./schemaTypes";
 
-export { Context, IGetCurrencieConversion };
+export {
+    Context,
+    IGetCurrencieConversion,
+    ICategory,
+    ICategoriesDetails,
+    Category,
+    IJoinedCategoryData,
+};

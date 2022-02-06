@@ -1,7 +1,11 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { getConnection, getRepository } from "typeorm";
 import { Tokens } from "../entity";
-import { IGetCurrencieConversion } from "../types";
+import {
+    IGetCurrencieConversion,
+    ICategory,
+    ICategoriesDetails,
+} from "../types";
 
 export class MercadoLivreAPI extends RESTDataSource {
     clientId = process.env.CLIEND_ID;
@@ -22,7 +26,7 @@ export class MercadoLivreAPI extends RESTDataSource {
 
     async getCurrencyConversion() {
         const tokens = await this.connection.findOne();
-        return this.get<IGetCurrencieConversion[]>(
+        return this.get<IGetCurrencieConversion>(
             "/currency_conversions/search?from=BRL&to=USD",
             {
                 headers: {
@@ -34,7 +38,7 @@ export class MercadoLivreAPI extends RESTDataSource {
 
     async getCategories() {
         const tokens = await this.connection.findOne();
-        return this.get("/sites/MLB/categories", {
+        return this.get<ICategory[]>("/sites/MLB/categories", {
             headers: {
                 authorization: `Bearer ${tokens?.token}`,
             },
@@ -43,7 +47,7 @@ export class MercadoLivreAPI extends RESTDataSource {
 
     async getCategoriesDetails(categoryId: string) {
         const tokens = await this.connection.findOne();
-        return this.get(`/categories/${categoryId}`, {
+        return this.get<ICategoriesDetails>(`/categories/${categoryId}`, {
             headers: {
                 authorization: `Bearer ${tokens?.token}`,
             },

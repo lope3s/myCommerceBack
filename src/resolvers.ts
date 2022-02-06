@@ -1,4 +1,4 @@
-import { Context } from "./types";
+import { Context, IJoinedCategoryData } from "./types";
 import { getConnection, getRepository } from "typeorm";
 import { Tokens } from "./entity";
 
@@ -28,14 +28,39 @@ const resolvers = {
 
             return "Connection Refreshed";
         },
-        getCurrencyConversion: async (
+        getInitialData: async (
             parent: any,
             args: any,
             { dataSources: { mercadoLivreApi } }: Context
         ) => {
-            const data = await mercadoLivreApi.getCurrencyConversion();
+            const currencieData = await mercadoLivreApi.getCurrencyConversion();
 
-            return data;
+            const data = await mercadoLivreApi.getCategories();
+
+            const joinedCategoryData = await Promise.all(
+                data.map(async (val) => {
+                    const { children_categories } =
+                        await mercadoLivreApi.getCategoriesDetails(val.id);
+
+                    const destructuredData = children_categories.map(
+                        (categoryDetails) => {
+                            const { total_items_in_this_category, ...rest } =
+                                categoryDetails;
+
+                            return rest;
+                        }
+                    );
+
+                    return {
+                        mainCategory: val,
+                        childrenCategories: destructuredData,
+                    };
+                })
+            );
+
+            const initialData = { currencieData, joinedCategoryData };
+
+            return initialData;
         },
     },
 };
